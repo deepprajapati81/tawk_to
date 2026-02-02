@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
 
 export default function Home() {
+ 
   return (
-   <Button className="bg-blue-500" > hello </Button>
+    
+   <h1>hello this is home page</h1>
   );
 }
