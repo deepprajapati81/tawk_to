@@ -8,13 +8,13 @@ import { Input } from "@/components/ui/input";
 import * as Yup from "yup";
 import Link from "next/link";
 export default function Signup() {
-  const { Logo,google } = AssetContainer();
+  const { google } = AssetContainer();
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 ">
       <div className="   py-24 px-24 w-180  ">
         <div className="flex flex-col items-center gap-y-6">
-          <Image src={Logo} alt="Logo" />
+          <Image src='./Logo.png' alt="Logo" />
           <h1 className="font-semibold text-[32px] text-[#100F14] text-center">
             Create an account
           </h1>

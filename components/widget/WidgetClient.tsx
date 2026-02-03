@@ -1,0 +1,195 @@
+"use client";
+import { Formik, Form, Field } from "formik";
+import { Button } from "../ui/button";
+import { useEffect, useMemo, useState } from "react";
+import { Input } from "@/components/ui/input";
+export default function WidgetClient({
+  initialColor,
+  initialTitle,
+}: {
+  initialColor?: string;
+  initialTitle?: string;
+}) {
+  const [color, setColor] = useState(initialColor || "#0ea5e9");
+  const [title, setTitle] = useState(initialTitle || "chatbot");
+  const [message, setMessage] = useState<string[]>([]);
+
+  const textColor = useMemo(() => {
+    try {
+      const c = (color || "").replace("#", "");
+      const bigint = parseInt(
+        c.length === 3
+          ? c
+              .split("")
+              .map((ch) => ch + ch)
+              .join("")
+          : c,
+        16,
+      );
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+      return luminance > 0.6 ? "#000" : "#fff";
+    } catch (e) {
+      return "#fff";
+    }
+  }, [color]);
+
+  useEffect(() => {
+    function handler(e: MessageEvent) {
+      if (!e.data || typeof e.data !== "object") return;
+
+      if (e.data.type === "setTheme") {
+        if (e.data.color) setColor(e.data.color);
+        if (e.data.title) setTitle(e.data.title);
+      }
+    }
+
+    window.addEventListener("message", handler);
+
+    // ask parent for latest theme on mount
+    window.parent?.postMessage({ type: "requestTheme" }, "*");
+
+    return () => window.removeEventListener("message", handler);
+  }, []);
+
+  const panelBg =
+    textColor === "#000" ? "rgba(255,255,255,0.9)" : "rgba(0,0,0,0.08)";
+
+  function tint(hex: string, a: number) {
+    try {
+      const c = hex.replace("#", "");
+      const full =
+        c.length === 3
+          ? c
+              .split("")
+              .map((ch) => ch + ch)
+              .join("")
+          : c;
+      const bigint = parseInt(full, 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return `rgba(${r}, ${g}, ${b}, ${a})`;
+    } catch (e) {
+      return `rgba(0,0,0,${a})`;
+    }
+  }
+
+  const footerBg = tint(color, 0.12);
+  const inputBg = "#fff";
+  const inputBorder = "rgba(0,0,0,0.06)";
+
+  // message text color should be black for readability
+  const messageTextColor = "#000";
+  const messageMetaColor = "#555";
+
+  return (
+    <div
+      className="h-screen flex flex-col shadow-xl"
+      style={{
+        fontFamily: "Inter, system-ui",
+        background: "#fff",
+        color: "#111",
+      }}
+    >
+      <div
+        style={{
+          padding: "12px",
+          fontWeight: 700,
+          borderBottom: "1px solid rgba(0,0,0,0.06)",
+          background: color,
+          color: textColor,
+          transition: "background 240ms ease, color 240ms ease",
+        }}
+        className="flex items-center sticky z-20"
+      >
+        <Button
+          className="text-xl mr-2"
+          style={{
+            background: color,
+            color: textColor,
+            padding: "8px 12px",
+            borderRadius: 6,
+          }}
+        >
+          ‹
+        </Button>
+        <h1 className="text-lg">{title}</h1>
+      </div>
+      <div style={{ background: panelBg }} className="flex-1 p-4 space-y-1 ">
+        <div className="text-sm">
+          {" "}
+          <div
+            className="w-fit px-3 py-2 rounded-md text-white text-sm  wrap-break-word"
+            style={{ color: messageTextColor, backgroundColor: color }}
+          >
+            Hello 👋
+          </div>
+          admin
+        </div>
+
+        <div className="flex flex-col items-end space-y-1 ">
+          {message &&
+            message.map((m: string, index: number) => (
+              <div key={index} className="text-end text-xs  ">
+                <div
+                  key={index}
+                  className="w-fit px-3 py-2 rounded-md text-white text-sm  wrap-break-word"
+                  style={{ backgroundColor: color }}
+                >
+                  {m}
+                </div>{" "}
+                User
+              </div>
+            ))}
+        </div>
+      </div>
+      <div
+        style={{
+          borderTop: "1px solid rgba(0,0,0,0.06)",
+          background: footerBg,
+        }}
+        className="p-2 flex gap-2 items-center  "
+      >
+        <Formik
+          initialValues={{ message: "" }}
+          onSubmit={(values, { resetForm }) => {
+            setMessage((prev) => [...prev, values.message]);
+
+            resetForm();
+          }}
+        >
+          {() => (
+            <Form className="flex gap-2 items-center w-full">
+              <Field
+                as={Input}
+                name="message"
+                className="flex-1 p-2 rounded"
+                placeholder="text here..."
+                style={{
+                  border: `1px solid ${inputBorder}`,
+                  background: inputBg,
+                  color: textColor === "#000" ? "#111" : "#222",
+                }}
+              />
+
+              <Button
+                type="submit"
+                style={{
+                  background: color,
+                  color: textColor,
+                  padding: "8px 12px",
+                  borderRadius: 6,
+                }}
+              >
+                Send
+              </Button>
+            </Form>
+          )}
+        </Formik>
+      </div>
+    </div>
+  );
+}
