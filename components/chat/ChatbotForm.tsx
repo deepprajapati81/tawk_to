@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ChatbotConfig } from "@/types/chatbot";
-import { useRouter } from "next/navigation";
+
 import {
   Select,
   SelectContent,
@@ -13,9 +13,11 @@ import {
   SelectItem,
   SelectValue,
 } from "../ui/select";
+
 type Props = {
   initialValues: ChatbotConfig;
   onChange: (values: Partial<ChatbotConfig>) => void;
+  setId:React.Dispatch<React.SetStateAction<string>>;
 };
 
 const fontClassMap: Record<string, string> = {
@@ -27,8 +29,8 @@ const fontClassMap: Record<string, string> = {
   firaCode: "font-FiraCode",
 };
 
-export const ChatbotForm = ({ initialValues, onChange }: Props) => {
-  const router = useRouter();
+export const ChatbotForm = ({ initialValues, onChange,setId }: Props) => {
+ 
 
   const handleSave = async () => {
     const res = await fetch("/api/widget", {
@@ -42,7 +44,8 @@ export const ChatbotForm = ({ initialValues, onChange }: Props) => {
 
     const data = await res.json();
     console.log(data);
-    router.push(`/script/${data.id}`);
+    setId(data.id)
+   
   };
 
   return (
@@ -96,7 +99,6 @@ export const ChatbotForm = ({ initialValues, onChange }: Props) => {
                 }}
                 onBlur={(e) => {
                   const color = (e.target as HTMLInputElement).value;
-
                   setFieldValue("color", color);
                 }}
               />
@@ -183,7 +185,7 @@ export const ChatbotForm = ({ initialValues, onChange }: Props) => {
               Save
             </Button> */}
             <Button type="submit" className="w-fit" onClick={handleSave}>
-              Next
+           Generate Script
             </Button>
           </div>
         </Form>

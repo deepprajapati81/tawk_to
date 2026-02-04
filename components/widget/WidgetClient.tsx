@@ -90,7 +90,7 @@ export default function WidgetClient({
 
   return (
     <div
-      className="h-screen flex flex-col shadow-xl"
+      className="h-screen flex flex-col shadow-xl "
       style={{
         fontFamily:FontFamily,
         background: "#fff",
@@ -100,16 +100,15 @@ export default function WidgetClient({
       }}
     >
       <div
-        style={{
-          padding: "10px",
-          fontWeight: 700,
-          borderBottom: "1px solid rgba(0,0,0,0.06)",
-          background: color,
-          color: textColor,
-          transition: "background 240ms ease, color 240ms ease",
-        }}
-        className="flex items-center sticky z-20"
-      >
+  className="fixed top-0 left-0 w-full z-20 flex items-center"
+  style={{
+    height: 56,
+    padding: "10px",
+    fontWeight: 700,
+    background: color,
+    color: textColor,
+  }}
+>
         <Button
           className="text-xl "
           style={{
@@ -123,7 +122,16 @@ export default function WidgetClient({
         </Button>
         <h1 className="text-lg text-start">{title}</h1>
       </div>
-      <div style={{ background: panelBg }} className="flex-1 p-4 space-y-1 ">
+<div
+  className="overflow-y-auto px-4 py-3 space-y-2"
+  style={{
+    background: panelBg,
+    marginTop: 56,    
+    marginBottom: 64, 
+    height: "calc(100vh - 56px - 64px)",
+  }}
+>
+        
         <div className="text-sm">
           {" "}
           <div
@@ -141,23 +149,24 @@ export default function WidgetClient({
               <div key={index} className="text-end text-xs  ">
                 <div
                   key={index}
-                  className="w-fit px-3 py-2 rounded-md text-white text-sm  wrap-break-word"
+                  className="w-fit px-3 py-2 rounded-md text-white text-sm wrap-normal"
                   style={{ backgroundColor: color,color: textColor, }}
                 >
-                  {m}
+                  <p className="wrap-break-word">{m}</p>
                 </div>{" "}
                 {/* User */}
               </div>
             ))}
         </div>
       </div>
-      <div
-        style={{
-          borderTop: "1px solid rgba(0,0,0,0.06)",
-          background: footerBg,
-        }}
-        className="p-2 flex gap-2 items-center  "
-      >
+     <div
+  className="fixed bottom-0 left-0 w-full z-20 p-2 flex gap-2 items-center"
+  style={{
+    height: 64,
+    borderTop: "1px solid rgba(0,0,0,0.06)",
+    background: footerBg,
+  }}
+>
         <Formik
           initialValues={{ message: "" }}
           onSubmit={(values, { resetForm }) => {

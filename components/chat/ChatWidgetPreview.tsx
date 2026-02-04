@@ -67,7 +67,7 @@
     const inputBorder = "rgba(0,0,0,0.06)";
 
     return (
-      <Card className={`w-full max-w-lg h-130 rounded-xl flex flex-col overflow-x-hidden shadow-lg gap-0 py-0 `} style={{fontFamily: fontFamily,transition: "background-color 200ms ease, color 300ms ease" }}>       {/* for font family*/}
+      <Card className={` xl:w-[80%] md:w-[70%]  w-full max-w-lg h-130 rounded-xl flex flex-col overflow-x-hidden shadow-lg gap-0 py-0  `} style={{fontFamily: fontFamily,transition: "background-color 200ms ease, color 300ms ease" }}>       {/* for font family*/}
         <div
           className="flex items-center px-4 py-3 text-white"
           style={{ backgroundColor: color , color: textColor ,}}
