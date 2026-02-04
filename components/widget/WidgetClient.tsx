@@ -142,7 +142,7 @@ export default function WidgetClient({
                 <div
                   key={index}
                   className="w-fit px-3 py-2 rounded-md text-white text-sm  wrap-break-word"
-                  style={{ backgroundColor: color }}
+                  style={{ backgroundColor: color,color: textColor, }}
                 >
                   {m}
                 </div>{" "}

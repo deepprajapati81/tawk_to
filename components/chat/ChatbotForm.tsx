@@ -163,9 +163,9 @@ export const ChatbotForm = ({ initialValues, onChange }: Props) => {
             </Select>
 
           <div className="flex gap-x-2">
-            <Button type="submit" className="w-fit">
+            {/* <Button type="submit" className="w-fit">
               Save
-            </Button>
+            </Button> */}
             <Button type="submit" className="w-fit" onClick={handleSave}>
               Next
             </Button>
