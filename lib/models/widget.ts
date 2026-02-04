@@ -10,6 +10,10 @@ const widgetSchema = new mongoose.Schema({
   title:{
     type:String,
     default:'chatbot'
+  },
+  fontFamily:{
+    type:String,
+   
   }
 });
 

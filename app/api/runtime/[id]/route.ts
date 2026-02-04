@@ -13,11 +13,13 @@ export async function GET(req: Request, context: any) {
     const reqUrl = new URL(req.url);
     const colorFromQuery = reqUrl.searchParams.get('color');
     const titleFromQuery = reqUrl.searchParams.get('title');
+    const fontFamilyFromQuery = reqUrl.searchParams.get('fontFamily');
     await connectDB();
     const widget = await Widget.findById(id);
 
     const color = colorFromQuery || widget?.color || "#000";
     const title =titleFromQuery || widget?.title || 'chatbot'
+    const fontFamily = fontFamilyFromQuery || widget?.fontFamily || "inter";
 
     const js = `
     (function(){
@@ -44,6 +46,7 @@ export async function GET(req: Request, context: any) {
         btn.style.fontWeight = '600';
         btn.style.boxShadow = '0 6px 18px rgba(0,0,0,0.18)';
         btn.style.background="${color}";
+        btn.style.color= computeTextColor("${color}"); 
         btn.style.position="fixed";
         btn.style.bottom="20px";
         btn.style.right="20px";
@@ -52,11 +55,14 @@ export async function GET(req: Request, context: any) {
         btn.style.borderRadius="50%";
         btn.style.cursor="pointer";
         btn.style.zIndex="999999";
+        btn.style.fontFamily= "${fontFamily}"
 
         var iframe=document.createElement("iframe");
         var params = new URLSearchParams({
   color: "${color}",
-  title: "${title}"
+  title: "${title}",
+ fontFamily:"${fontFamily}"
+
 });
         // pass color as query param for initial load; we will poll and postMessage updates
    iframe.src = base + "/widget-ui/${id}?" + params.toString();
@@ -98,6 +104,9 @@ export async function GET(req: Request, context: any) {
         // fetch the latest color from the server and update if changed
         var currentColor = "${color}";
         var currentTitle = "${title}";
+        var currentFontFamily = "${fontFamily}"
+        
+
         function computeTextColor(hex){
           try{
             var c = hex.replace('#','');
@@ -111,22 +120,23 @@ export async function GET(req: Request, context: any) {
           }catch(e){return '#fff';}
         }
 
-      function applyTheme(c, t){
+    function applyTheme(c, t, f){
   try{
     if(c){
       btn.style.background = c;
-      btn.style.color = computeTextColor(c);
+      btn.style.color = computeTextColor(c); 
     }
 
-    try{
-      iframe.contentWindow && iframe.contentWindow.postMessage({
-        type: 'setTheme',
-        color: c,
-        title: t
-      }, '*');
-    }catch(e){}
+    iframe.contentWindow && iframe.contentWindow.postMessage({
+      type: 'setTheme',
+      color: c,
+      title: t,
+      fontFamily: f
+    }, '*');
+
   }catch(e){}
 }
+
 
 
       function fetchThemeOnce(){
@@ -149,8 +159,13 @@ export async function GET(req: Request, context: any) {
           changed = true;
         }
 
+        if(jsn.fontFamily && jsn.fontFamily !== currentFontFamily){
+          currentFontFamily = jsn.fontFamily;
+          changed = true;
+        }
+
         if(changed){
-          applyTheme(currentColor, currentTitle);
+          applyTheme(currentColor, currentTitle,currentFontFamily);
         }
       })
       .catch(function(){});
@@ -163,6 +178,7 @@ export async function GET(req: Request, context: any) {
         setTimeout(fetchThemeOnce, 500);
 
         // also listen for messages from the iframe (optional)
+
         window.addEventListener('message', function(ev){
           try{
             if(!ev || !ev.data) return;
@@ -170,7 +186,8 @@ export async function GET(req: Request, context: any) {
   iframe.contentWindow && iframe.contentWindow.postMessage({
     type: 'setTheme',
     color: currentColor,
-    title: currentTitle
+    title: currentTitle,
+    fontFamily: currentFontFamily
   }, '*');
 }
 

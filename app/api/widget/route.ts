@@ -6,9 +6,9 @@ export async function POST(req: Request) {
   try {
     await connectDB();
 
-    const { color,title } = await req.json();
-    console.log(title);
-    const widget = await Widget.create({ color:color, title:title });
+    const { color,title,fontFamily } = await req.json();
+    console.log(fontFamily);
+    const widget = await Widget.create({ color:color, title:title, fontFamily:fontFamily });
 
     return NextResponse.json({ id: widget._id.toString() });
   } catch {

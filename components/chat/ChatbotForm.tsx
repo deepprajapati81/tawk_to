@@ -1,26 +1,34 @@
 
 "use client";
-
+import { fontOptions } from "@/lib/font-option";
 import { Formik, Form, FieldArray } from "formik";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ChatbotConfig } from "@/types/chatbot";
 import { useRouter } from "next/navigation";
+import { Select,SelectContent,SelectTrigger,SelectItem,SelectValue } from "../ui/select";
 type Props = {
   initialValues: ChatbotConfig;
   onChange: (values: ChatbotConfig) => void;
   
 };
 
-
+const fontClassMap: Record<string, string> = {
+  inter: "font-inter",
+  roboto: "font-roboto",
+  poppins: "font-poppins",
+  montserrat: "font-montserrat",
+  jetBrainsMono:"font-JetBrainsMono",
+  firaCode:"font-FiraCode"
+}
 
 export const ChatbotForm = ({ initialValues, onChange }: Props) => {
     const router = useRouter()
     const handleSave  = async ()=>{
     const res = await fetch("/api/widget", {
       method: "POST",
-      body: JSON.stringify({ color:initialValues.color, title:initialValues.title }),
+      body: JSON.stringify({ color:initialValues.color, title:initialValues.title ,fontFamily:initialValues.fontFamily }),
     });
 
     const data = await res.json();
@@ -132,6 +140,27 @@ export const ChatbotForm = ({ initialValues, onChange }: Props) => {
               </div>
             )}
           </FieldArray>
+
+            <Select value={values.fontFamily} onValueChange={(value) =>{
+                setFieldValue("fontFamily", value)
+                  // onChange({ ...values, fontFamily: e.target.value })
+                    onChange({ ...values, fontFamily: value });
+                
+              }}>
+              <SelectTrigger className="w-60"> <SelectValue  placeholder="Select font family" /></SelectTrigger>
+             <SelectContent>
+    {fontOptions.map((font) => (
+      <SelectItem
+        key={font.value}
+        value={font.value}
+        className={fontClassMap[font.value]}
+      >
+        {font.label}
+      </SelectItem>
+    ))}
+  </SelectContent>
+               
+            </Select>
 
           <div className="flex gap-x-2">
             <Button type="submit" className="w-fit">

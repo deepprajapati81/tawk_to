@@ -3,6 +3,7 @@ type PageProps = {
   searchParams?: Promise<{
     color?: string;
     title?: string;
+    fontFamily?: string;
   }>;
 };
 
@@ -11,6 +12,6 @@ export default async function WidgetUI({ searchParams }: PageProps) {
     console.log(params)
   const color = params?.color || "#0ea5e9";
   const title = params?.title || "chatbot";
-
-  return <WidgetClient initialColor={color} initialTitle={title} />;
+const fontFamily = params?.fontFamily || "inter"; 
+  return <WidgetClient initialColor={color} initialTitle={title} initialFontFamily = {fontFamily}/>;
 }

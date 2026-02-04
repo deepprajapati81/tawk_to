@@ -4,5 +4,6 @@ export type ChatbotConfig = {
   color: string;
   message: string;
   suggestions: string[];
-  userMessages:string[]
+  userMessages:string[];
+  fontFamily:string
 };

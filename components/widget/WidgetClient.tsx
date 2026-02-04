@@ -6,12 +6,15 @@ import { Input } from "@/components/ui/input";
 export default function WidgetClient({
   initialColor,
   initialTitle,
+  initialFontFamily
 }: {
   initialColor?: string;
   initialTitle?: string;
+  initialFontFamily?: string;
 }) {
   const [color, setColor] = useState(initialColor || "#0ea5e9");
   const [title, setTitle] = useState(initialTitle || "chatbot");
+  const [FontFamily,setFontFamily] = useState(initialFontFamily|| 'inter')
   const [message, setMessage] = useState<string[]>([]);
 
   const textColor = useMemo(() => {
@@ -81,7 +84,7 @@ export default function WidgetClient({
   const inputBg = "#fff";
   const inputBorder = "rgba(0,0,0,0.06)";
 
-  // message text color should be black for readability
+
   const messageTextColor = "#000";
   const messageMetaColor = "#555";
 
@@ -89,14 +92,16 @@ export default function WidgetClient({
     <div
       className="h-screen flex flex-col shadow-xl"
       style={{
-        fontFamily: "Inter, system-ui",
+        fontFamily:FontFamily,
         background: "#fff",
-        color: "#111",
+        // color: "#111",
+        color: textColor,
+        
       }}
     >
       <div
         style={{
-          padding: "12px",
+          padding: "10px",
           fontWeight: 700,
           borderBottom: "1px solid rgba(0,0,0,0.06)",
           background: color,
@@ -106,7 +111,7 @@ export default function WidgetClient({
         className="flex items-center sticky z-20"
       >
         <Button
-          className="text-xl mr-2"
+          className="text-xl "
           style={{
             background: color,
             color: textColor,
@@ -116,18 +121,18 @@ export default function WidgetClient({
         >
           ‹
         </Button>
-        <h1 className="text-lg">{title}</h1>
+        <h1 className="text-lg text-start">{title}</h1>
       </div>
       <div style={{ background: panelBg }} className="flex-1 p-4 space-y-1 ">
         <div className="text-sm">
           {" "}
           <div
             className="w-fit px-3 py-2 rounded-md text-white text-sm  wrap-break-word"
-            style={{ color: messageTextColor, backgroundColor: color }}
+            style={{ color: textColor, backgroundColor: color }}
           >
             Hello 👋
           </div>
-          admin
+          {/* admin */}
         </div>
 
         <div className="flex flex-col items-end space-y-1 ">
@@ -141,7 +146,7 @@ export default function WidgetClient({
                 >
                   {m}
                 </div>{" "}
-                User
+                {/* User */}
               </div>
             ))}
         </div>
