@@ -1,4 +1,3 @@
-
 "use client";
 import { fontOptions } from "@/lib/font-option";
 import { Formik, Form, FieldArray } from "formik";
@@ -7,11 +6,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ChatbotConfig } from "@/types/chatbot";
 import { useRouter } from "next/navigation";
-import { Select,SelectContent,SelectTrigger,SelectItem,SelectValue } from "../ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectItem,
+  SelectValue,
+} from "../ui/select";
 type Props = {
   initialValues: ChatbotConfig;
-  onChange: (values: ChatbotConfig) => void;
-  
+  onChange: (values: Partial<ChatbotConfig>) => void;
 };
 
 const fontClassMap: Record<string, string> = {
@@ -19,33 +23,37 @@ const fontClassMap: Record<string, string> = {
   roboto: "font-roboto",
   poppins: "font-poppins",
   montserrat: "font-montserrat",
-  jetBrainsMono:"font-JetBrainsMono",
-  firaCode:"font-FiraCode"
-}
+  jetBrainsMono: "font-JetBrainsMono",
+  firaCode: "font-FiraCode",
+};
 
 export const ChatbotForm = ({ initialValues, onChange }: Props) => {
-    const router = useRouter()
-    const handleSave  = async ()=>{
+  const router = useRouter();
+
+  const handleSave = async () => {
     const res = await fetch("/api/widget", {
       method: "POST",
-      body: JSON.stringify({ color:initialValues.color, title:initialValues.title ,fontFamily:initialValues.fontFamily }),
+      body: JSON.stringify({
+        color: initialValues.color,
+        title: initialValues.title,
+        fontFamily: initialValues.fontFamily,
+      }),
     });
 
     const data = await res.json();
-    console.log(data)
-     router.push(`/script/${data.id}`)
-}
+    console.log(data);
+    router.push(`/script/${data.id}`);
+  };
+
   return (
     <Formik
       initialValues={initialValues}
       onSubmit={(values) => {
         onChange(values);
-        
       }}
     >
       {({ values, setFieldValue }) => (
         <Form className="space-y-6">
-         
           <div className="space-y-2">
             <label className="font-semibold">Title</label>
             <Input
@@ -58,7 +66,6 @@ export const ChatbotForm = ({ initialValues, onChange }: Props) => {
             />
           </div>
 
-        
           <div className="space-y-3">
             <label className="font-semibold">Color</label>
 
@@ -81,15 +88,21 @@ export const ChatbotForm = ({ initialValues, onChange }: Props) => {
                 type="color"
                 value={values.color}
                 className="w-16 h-10 p-1"
-                onChange={(e) => {
-                  setFieldValue("color", e.target.value);
-                  onChange({ ...values, color: e.target.value });
+                onInput={(e) => {
+                  const color = (e.target as HTMLInputElement).value;
+
+                  onChange({ color });
+
+                }}
+                onBlur={(e) => {
+                  const color = (e.target as HTMLInputElement).value;
+
+                  setFieldValue("color", color);
                 }}
               />
             </div>
           </div>
 
-          
           <div className="space-y-2">
             <label className="font-semibold">Welcome Message</label>
             <Textarea
@@ -101,7 +114,6 @@ export const ChatbotForm = ({ initialValues, onChange }: Props) => {
             />
           </div>
 
-        
           <FieldArray name="suggestions">
             {({ push, remove }) => (
               <div className="space-y-3">
@@ -141,26 +153,30 @@ export const ChatbotForm = ({ initialValues, onChange }: Props) => {
             )}
           </FieldArray>
 
-            <Select value={values.fontFamily} onValueChange={(value) =>{
-                setFieldValue("fontFamily", value)
-                  // onChange({ ...values, fontFamily: e.target.value })
-                    onChange({ ...values, fontFamily: value });
-                
-              }}>
-              <SelectTrigger className="w-60"> <SelectValue  placeholder="Select font family" /></SelectTrigger>
-             <SelectContent>
-    {fontOptions.map((font) => (
-      <SelectItem
-        key={font.value}
-        value={font.value}
-        className={fontClassMap[font.value]}
-      >
-        {font.label}
-      </SelectItem>
-    ))}
-  </SelectContent>
-               
-            </Select>
+          <Select
+            value={values.fontFamily}
+            onValueChange={(value) => {
+              setFieldValue("fontFamily", value);
+              // onChange({ ...values, fontFamily: e.target.value })
+              onChange({ ...values, fontFamily: value });
+            }}
+          >
+            <SelectTrigger className="w-60">
+              {" "}
+              <SelectValue placeholder="Select font family" />
+            </SelectTrigger>
+            <SelectContent>
+              {fontOptions.map((font) => (
+                <SelectItem
+                  key={font.value}
+                  value={font.value}
+                  className={fontClassMap[font.value]}
+                >
+                  {font.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
           <div className="flex gap-x-2">
             {/* <Button type="submit" className="w-fit">
