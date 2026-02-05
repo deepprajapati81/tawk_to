@@ -1,10 +1,9 @@
 "use client";
 import { Card } from "@/components/ui/card";
 import { Input } from "../ui/input";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Field, Form, Formik } from "formik";
-import { ChatbotConfig } from "@/types/chatbot";
 
 type Props = {
   config: {
@@ -12,15 +11,16 @@ type Props = {
     color: string;
     message: string;
     suggestions: string[];
-    userMessages: string[];
     fontFamily: string;
   };
 };
 
 export const ChatWidgetPreview = ({ config }: Props) => {
-  const { title, color, message, suggestions, userMessages, fontFamily } =
+  const { title, color, message, suggestions, fontFamily } =
     config;
   const [inputMessage, setInputMessage] = useState<string[]>([]);
+  const [isSending, setIsSending] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const textColor = useMemo(() => {
     try {
@@ -66,6 +66,11 @@ export const ChatWidgetPreview = ({ config }: Props) => {
   const inputBg = "#fff";
   const inputBorder = "rgba(0,0,0,0.06)";
 
+  // Auto-scroll to bottom when new message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [inputMessage]);
+
   return (
     <Card
       className={` xl:w-[80%] md:w-[70%]  w-full max-w-lg h-130 rounded-xl flex flex-col overflow-x-hidden shadow-lg gap-0 py-0  `}
@@ -85,7 +90,7 @@ export const ChatWidgetPreview = ({ config }: Props) => {
       </div>
       <div className="flex-1 px-3 py-4 space-y-3 overflow-y-auto">
         <div
-          className="w-fit px-3 py-2 rounded-md  text-sm wrap-break-word break-all whitespace-pre-wrap"
+          className="w-fit px-4 py-2.5 rounded-2xl text-sm wrap-break-word break-all whitespace-pre-wrap shadow-sm message-fadeIn"
           style={{ backgroundColor: color, color: textColor }}
         >
           {message}
@@ -95,8 +100,8 @@ export const ChatWidgetPreview = ({ config }: Props) => {
           {suggestions?.filter((m) => m.trim().length > 0).map((s, i) => (
             <div
               key={i}
-              className="w-fit px-3 py-2 rounded-md  text-sm wrap-break-word break-all whitespace-pre-wrap"
-              style={{ backgroundColor: color, color: textColor }}
+              className="w-fit px-4 py-2.5 rounded-2xl text-sm wrap-break-word break-all whitespace-pre-wrap shadow-sm message-fadeIn"
+              style={{ backgroundColor: color, color: textColor, animationDelay: `${i * 0.1}s` }}
             >
               {s}
             </div>
@@ -104,19 +109,22 @@ export const ChatWidgetPreview = ({ config }: Props) => {
         </div>
         <div className="flex flex-col items-end space-y-2">
           {inputMessage &&
-            inputMessage  ?.filter((m) => m.trim().length > 0).map((m: string, index: number) => (
-              <div key={index} className=" text-xs">
+            inputMessage?.filter((m) => m.trim().length > 0).map((m: string, index: number) => (
+              <div 
+                key={index} 
+                className="text-xs max-w-[85%] message-fadeIn"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
                 <div
-                  key={index}
-                  className="w-fit px-3 py-2 rounded-md  text-sm  wrap-break-word break-all whitespace-pre-wrap"
+                  className="w-fit px-4 py-2.5 rounded-2xl text-sm wrap-break-word break-word whitespace-pre-wrap shadow-sm"
                   style={{ backgroundColor: color, color: textColor }}
                 >
                   {m}
-                </div>{" "}
-                {/* User */}
+                </div>
               </div>
             ))}
         </div>
+        <div ref={messagesEndRef} />
       </div>
       {/* Input */}
       <div
@@ -129,9 +137,15 @@ export const ChatWidgetPreview = ({ config }: Props) => {
         <Formik
           initialValues={{ message: "" }}
           onSubmit={(values, { resetForm }) => {
-            setInputMessage((prev) => [...prev, values.message]);
-
-            resetForm();
+            if (!values.message.trim()) return;
+            
+            setIsSending(true);
+            
+            setTimeout(() => {
+              setInputMessage((prev) => [...prev, values.message]);
+              setIsSending(false);
+              resetForm();
+            }, 300);
           }}
         >
           {() => (
@@ -139,25 +153,30 @@ export const ChatWidgetPreview = ({ config }: Props) => {
               <Field
                 as={Input}
                 name="message"
-                className="flex-1 p-2 rounded"
-                placeholder="text here..."
+                className="flex-1 p-2.5 rounded-xl transition-all duration-200 focus:ring-2"
+                placeholder="Type your message..."
                 style={{
                   border: `1px solid ${inputBorder}`,
                   background: inputBg,
                   color: textColor === "#000" ? "#111" : "#222",
+                  outline: "none",
                 }}
               />
 
               <Button
                 type="submit"
+                disabled={isSending}
+                className={`transition-all duration-200 ${isSending ? 'animate-pulse scale-95' : 'hover:scale-105'}`}
                 style={{
                   background: color,
                   color: textColor,
-                  padding: "8px 12px",
-                  borderRadius: 6,
+                  padding: "10px 16px",
+                  borderRadius: "12px",
+                  fontWeight: "600",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                 }}
               >
-                Send
+                {isSending ? "..." : "Send"}
               </Button>
             </Form>
           )}

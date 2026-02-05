@@ -1,7 +1,7 @@
 "use client";
 import { Formik, Form, Field } from "formik";
 import { Button } from "../ui/button";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 export default function WidgetClient({
   initialColor,
@@ -16,6 +16,8 @@ export default function WidgetClient({
   const [title, setTitle] = useState(initialTitle || "chatbot");
   const [FontFamily,setFontFamily] = useState(initialFontFamily|| 'inter')
   const [message, setMessage] = useState<string[]>([]);
+  const [isSending, setIsSending] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const textColor = useMemo(() => {
     try {
@@ -84,19 +86,18 @@ export default function WidgetClient({
   const inputBg = "#fff";
   const inputBorder = "rgba(0,0,0,0.06)";
 
-
-  const messageTextColor = "#000";
-  const messageMetaColor = "#555";
+  // Auto-scroll to bottom when new message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [message]);
 
   return (
     <div
-      className="h-screen flex flex-col shadow-xl "
+      className="h-screen flex flex-col shadow-xl overflow-hidden"
       style={{
         fontFamily:FontFamily,
         background: "#fff",
-        // color: "#111",
         color: textColor,
-        
       }}
     >
       <div
@@ -132,32 +133,33 @@ export default function WidgetClient({
   }}
 >
         
-        <div className="text-sm">
-          {" "}
+        <div className="text-sm message-fadeIn">
           <div
-            className="w-fit px-3 py-2 rounded-md text-sm  wrap-break-word break-all whitespace-pre-wrap"
+            className="w-fit px-4 py-2.5 rounded-2xl text-sm wrap-break-word break-all whitespace-pre-wrap shadow-sm"
             style={{ color: textColor, backgroundColor: color }}
           >
             Hello 👋
           </div>
-          {/* admin */}
         </div>
 
-        <div className="flex flex-col items-end space-y-1  ">
+        <div className="flex flex-col items-end space-y-2">
           {message &&
             message?.filter((m) => m.trim().length > 0).map((m: string, index: number) => (
-              <div key={index} className=" text-xs">
+              <div 
+                key={index} 
+                className=" text-xs max-w-[85%]"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
                 <div
-                  key={index}
-                  className="w-fit px-3 py-2 rounded-md  text-sm wrap-break-word break-all whitespace-pre-wrap"
-                  style={{ backgroundColor: color,color: textColor, }}
+                  className="w-fit px-4 py-2.5 rounded-2xl text-sm wrap-break-word break-word whitespace-pre-wrap shadow-sm message-fadeIn"
+                  style={{ backgroundColor: color, color: textColor }}
                 >
-                 <p className="wrap-break-word">{m}</p>
-                </div>{" "}
-                {/* User */}
+                  <p className="wrap-break-word">{m}</p>
+                </div>
               </div>
             ))}
         </div>
+        <div ref={messagesEndRef} />
       </div>
      <div
   className="fixed bottom-0 left-0 w-full z-20 p-2 flex gap-2 items-center"
@@ -170,9 +172,16 @@ export default function WidgetClient({
         <Formik
           initialValues={{ message: "" }}
           onSubmit={(values, { resetForm }) => {
-            setMessage((prev) => [...prev, values.message]);
-
-            resetForm();
+            if (!values.message.trim()) return;
+            
+            setIsSending(true);
+            
+            // Simulate sending animation
+            setTimeout(() => {
+              setMessage((prev) => [...prev, values.message]);
+              setIsSending(false);
+              resetForm();
+            }, 300);
           }}
         >
           {() => (
@@ -180,25 +189,30 @@ export default function WidgetClient({
               <Field
                 as={Input}
                 name="message"
-                className="flex-1 p-2 rounded"
-                placeholder="text here..."
+                className="flex-1 p-2.5 rounded-xl transition-all duration-200 focus:ring-2"
+                placeholder="Type your message..."
                 style={{
                   border: `1px solid ${inputBorder}`,
                   background: inputBg,
                   color: textColor === "#000" ? "#111" : "#222",
+                  outline: "none",
                 }}
               />
 
               <Button
                 type="submit"
+                disabled={isSending}
+                className={`transition-all duration-200 ${isSending ? 'animate-pulse scale-95' : 'hover:scale-105'}`}
                 style={{
                   background: color,
                   color: textColor,
-                  padding: "8px 12px",
-                  borderRadius: 6,
+                  padding: "10px 16px",
+                  borderRadius: "12px",
+                  fontWeight: "600",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                 }}
               >
-                Send
+                {isSending ? "..." : "Send"}
               </Button>
             </Form>
           )}

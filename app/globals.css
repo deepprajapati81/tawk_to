@@ -123,3 +123,168 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Code Block Enhancements */
+@layer components {
+  /* Ensure code blocks render beautifully */
+  pre, code {
+    font-feature-settings: "liga" 1, "calt" 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Custom scrollbar for code blocks if needed */
+  pre::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  pre::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+  }
+
+  pre::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+
+  pre::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  /* Syntax highlighting token enhancements */
+  .token.comment,
+  .token.prolog,
+  .token.doctype,
+  .token.cdata {
+    font-style: italic;
+  }
+
+  .token.keyword,
+  .token.tag {
+    font-weight: 600;
+  }
+
+  /* Code block animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .message-fadeIn{
+    animation: fadeIn 0.1s ease-out;
+  }
+
+  .code-block-wrapper {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  /* Shimmer animation for skeleton */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes shimmer-fast {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(200%);
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
+  .animate-shimmer-fast {
+    animation: shimmer-fast 1.5s infinite;
+  }
+
+  /* Widget Message Animations */
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes bounceIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+    70% {
+      transform: scale(0.9);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-slideInLeft {
+    animation: slideInLeft 0.4s ease-out;
+  }
+
+  .animate-slideInRight {
+    animation: slideInRight 0.4s ease-out;
+  }
+
+  .animate-bounceIn {
+    animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+}

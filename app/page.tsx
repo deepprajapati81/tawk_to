@@ -1,12 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Card,CardFooter, CardDescription, CardTitle, CardHeader ,CardContent } from "@/components/ui/card";
-import { ChatWidgetPreview } from "@/components/chat/ChatWidgetPreview";
+import { useMemo, useState, Suspense } from "react";
+import dynamic from "next/dynamic";
 import { ChatbotForm } from "@/components/chat/ChatbotForm";
 import { ChatbotConfig } from "@/types/chatbot";
+import { WidgetSkeletonShimmer } from "@/components/widget/WidgetSkeleton";
+import { CodeBlockSkeletonShimmer } from "@/components/ui/code-block-skeleton";
 
-import { Button } from "@/components/ui/button";
+// Dynamic imports with loading states
+const ChatWidgetPreview = dynamic(
+  () => import("@/components/chat/ChatWidgetPreview").then((mod) => ({ default: mod.ChatWidgetPreview })),
+  {
+    loading: () => <WidgetSkeletonShimmer />,
+    ssr: false,
+  }
+);
+
+const CodeBlock = dynamic(
+  () => import("@/components/ui/code-block").then((mod) => ({ default: mod.CodeBlock })),
+  {
+    loading: () => <CodeBlockSkeletonShimmer theme="light" />,
+    ssr: true,
+  }
+);
 
 const initialConfig: ChatbotConfig = {
   title: "Codelinks",
@@ -21,36 +37,22 @@ export default function ChatbotBuilderPage() {
   const [config, setConfig] = useState<ChatbotConfig>(initialConfig);
   const [id, setId] = useState<string>("");
 
-  const [copied, setCopied] = useState(false);
-
-  const [snippet, setSnippet] = useState("");
-
-  useEffect(() => {
+  const snippet = useMemo(() => {
+    if (!id) return "";
+    
     console.log("id of widget" + id);
-    try {
-      if (typeof window !== "undefined") {
-        const absOrigin =
-          window.location.origin ||
-          process.env.NEXT_PUBLIC_BASE_URL ||
-          "http://localhost:3000";
-        setSnippet(
-          `<script src="${absOrigin}/api/loader/${id}" async></script>`,
-        );
-      }
-    } catch (e) {}
+    if (typeof window !== "undefined") {
+      const absOrigin =
+        window.location.origin ||
+        process.env.NEXT_PUBLIC_BASE_URL ||
+        "http://localhost:3000";
+      return `<script src="${absOrigin}/api/loader/${id}" async></script>`;
+    }
+    return "";
   }, [id]);
+
   const handleChange = (values: Partial<ChatbotConfig>) => {
     setConfig((prev) => ({ ...prev, ...values }));
-  };
-
-  const copyToClipboard = async () => {
-    try {
-      await navigator.clipboard.writeText(snippet);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      alert("Copy failed. Please copy manually.");
-    }
   };
 
   return (
@@ -81,29 +83,17 @@ export default function ChatbotBuilderPage() {
 
       </div>
 
-    <div className="md:w-[60%] w-full lg:w-[40%]">  {id && (
-        <Card >
-          <CardHeader>
-            <CardTitle className="text-[23px] ">
-              Copy to Clipboard
-            </CardTitle>
-          </CardHeader>
-
-          <CardContent>
-            <p className="wrap-break-word text-[15px]   p-3 rounded">
-              {snippet}
-            </p>
-          </CardContent>
-
-          <CardFooter>
-            <Button
-              onClick={copyToClipboard}
-              className=" bg-black text-white py-2 rounded hover:opacity-90 "
-            >
-              {copied ? "✅ Copied!" : "Copy Script"}
-            </Button>
-          </CardFooter>
-        </Card>
+    <div className="w-full">  {id && (
+        <div className="space-y-4">
+          <h2 className="text-[23px] font-bold">Your Widget Code</h2>
+          <CodeBlock 
+            code={snippet} 
+            language="html"
+            title="Copy and paste this code snippet into your website's HTML, just before the closing </body> tag."
+            theme="light"
+            primaryColor={config.color}
+          />
+        </div>
       )}</div>
     </div>
   </div>

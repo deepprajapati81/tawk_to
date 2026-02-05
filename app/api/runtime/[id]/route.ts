@@ -37,25 +37,54 @@ export async function GET(req: Request, context: any) {
         })();
 
         var btn=document.createElement("div");
-        btn.innerText = "Chat";
+        btn.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>';
         btn.setAttribute('role','button');
         btn.setAttribute('aria-label','Open support chat');
         btn.style.display = 'flex';
         btn.style.alignItems = 'center';
         btn.style.justifyContent = 'center';
-        btn.style.fontWeight = '600';
-        btn.style.boxShadow = '0 6px 18px rgba(0,0,0,0.18)';
+        btn.style.fontWeight = '700';
+        btn.style.fontSize = '14px';
+        btn.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)';
         btn.style.background="${color}";
         btn.style.color= computeTextColor("${color}"); 
         btn.style.position="fixed";
-        btn.style.bottom="20px";
-        btn.style.right="20px";
-        btn.style.width="60px";
-        btn.style.height="60px";
+        btn.style.bottom="24px";
+        btn.style.right="24px";
+        btn.style.width="64px";
+        btn.style.height="64px";
         btn.style.borderRadius="50%";
         btn.style.cursor="pointer";
         btn.style.zIndex="999999";
-        btn.style.fontFamily= "${fontFamily}"
+        btn.style.fontFamily= "${fontFamily}";
+        btn.style.transition = 'all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+        btn.style.border = 'none';
+        
+        // Add hover effect
+        btn.onmouseenter = function() {
+          this.style.transform = 'scale(1.1) rotate(5deg)';
+          this.style.boxShadow = '0 12px 32px rgba(0,0,0,0.25)';
+        };
+        btn.onmouseleave = function() {
+          this.style.transform = 'scale(1) rotate(0deg)';
+          this.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)';
+        };
+
+        // Add pulse animation
+        var pulseKeyframes = '@keyframes pulse-chat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }';
+        var styleSheet = document.createElement('style');
+        styleSheet.textContent = pulseKeyframes;
+        document.head.appendChild(styleSheet);
+        
+        // Apply pulse animation periodically
+        setInterval(function() {
+          if(iframe.style.display === 'none') {
+            btn.style.animation = 'pulse-chat 2s ease-in-out';
+            setTimeout(function() {
+              btn.style.animation = '';
+            }, 2000);
+          }
+        }, 5000);
 
 
 
@@ -71,8 +100,11 @@ iframe.src = base + "/widget-ui/${id}?" + params.toString();
 iframe.style.position = "fixed";
 iframe.style.border = "0";
 iframe.style.display = "none";
-iframe.style.boxShadow = "0 10px 30px rgba(0,0,0,0.2)";
+iframe.style.boxShadow = "0 12px 40px rgba(0,0,0,0.25)";
 iframe.style.zIndex = "999990";
+iframe.style.transition = "all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)";
+iframe.style.opacity = "0";
+iframe.style.transform = "scale(0.95)";
 iframe.setAttribute("allow", "clipboard-write");
 iframe.setAttribute("title", "Support Chat Widget");
 iframe.setAttribute("aria-hidden", "true");
@@ -80,28 +112,63 @@ iframe.setAttribute("aria-hidden", "true");
 function applyResponsiveIframe() {
   try {
     var w = window.innerWidth;
+    var h = window.innerHeight;
 
-    iframe.style.right = "16px";
-    iframe.style.bottom = "80px";
-    iframe.style.borderRadius = "10px";
-
-    // 📱 Mobile
-    if (w <= 640) {
-      iframe.style.width = "80vw";
-      iframe.style.height = "50vh";
-      iframe.style.right = "10";
-      iframe.style.bottom = "30";
-      iframe.style.borderRadius = "10px";
+    // 📱 Mobile - Full screen on small devices
+    if (w <= 480) {
+      iframe.style.width = "calc(100vw - 16px)";
+      iframe.style.height = "calc(100vh - 100px)";
+      iframe.style.right = "8px";
+      iframe.style.bottom = "92px";
+      iframe.style.left = "8px";
+      iframe.style.borderRadius = "16px";
+      iframe.style.maxWidth = "none";
+    }
+    // 📱 Mobile landscape / Small tablet
+    else if (w <= 768) {
+      iframe.style.width = "calc(100vw - 32px)";
+      iframe.style.height = "70vh";
+      iframe.style.maxHeight = "500px";
+      iframe.style.right = "16px";
+      iframe.style.bottom = "96px";
+      iframe.style.left = "auto";
+      iframe.style.borderRadius = "16px";
+      iframe.style.maxWidth = "400px";
     }
     // 📱 Tablet
     else if (w <= 1024) {
-      iframe.style.width = "320px";
-      iframe.style.height = "450px";
+      iframe.style.width = "360px";
+      iframe.style.height = "500px";
+      iframe.style.maxHeight = "80vh";
+      iframe.style.right = "20px";
+      iframe.style.bottom = "96px";
+      iframe.style.left = "auto";
+      iframe.style.borderRadius = "16px";
+      iframe.style.maxWidth = "none";
     }
     // 🖥 Desktop
     else {
-      iframe.style.width = "350px";
-      iframe.style.height = "500px";
+      iframe.style.width = "400px";
+      iframe.style.height = "600px";
+      iframe.style.maxHeight = "85vh";
+      iframe.style.right = "24px";
+      iframe.style.bottom = "100px";
+      iframe.style.left = "auto";
+      iframe.style.borderRadius = "16px";
+      iframe.style.maxWidth = "none";
+    }
+
+    // Adjust button position for mobile
+    if (w <= 480) {
+      btn.style.bottom = "20px";
+      btn.style.right = "20px";
+      btn.style.width = "56px";
+      btn.style.height = "56px";
+    } else {
+      btn.style.bottom = "24px";
+      btn.style.right = "24px";
+      btn.style.width = "64px";
+      btn.style.height = "64px";
     }
   } catch(e){}
 }
@@ -109,9 +176,33 @@ function applyResponsiveIframe() {
 applyResponsiveIframe();
 window.addEventListener("resize", applyResponsiveIframe);
 
+        var isOpen = false;
         btn.onclick=function(){
-          iframe.style.display =
-            iframe.style.display==="none"?"block":"none";
+          isOpen = !isOpen;
+          
+          if(isOpen) {
+            // Open animation
+            iframe.style.display = "block";
+            setTimeout(function() {
+              iframe.style.opacity = "1";
+              iframe.style.transform = "scale(1)";
+            }, 10);
+            
+            // Change button icon to X
+            btn.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+            btn.style.transform = 'rotate(90deg)';
+          } else {
+            // Close animation
+            iframe.style.opacity = "0";
+            iframe.style.transform = "scale(0.95)";
+            setTimeout(function() {
+              iframe.style.display = "none";
+            }, 300);
+            
+            // Change button icon back to chat
+            btn.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>';
+            btn.style.transform = 'rotate(0deg)';
+          }
         };
 
         function _append(){

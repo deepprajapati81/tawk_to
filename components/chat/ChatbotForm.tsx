@@ -185,7 +185,7 @@ export const ChatbotForm = ({ initialValues, onChange,setId }: Props) => {
               Save
             </Button> */}
             <Button type="submit" className="w-fit" onClick={handleSave}>
-           Generate Script
+           Generate Widget
             </Button>
           </div>
         </Form>
