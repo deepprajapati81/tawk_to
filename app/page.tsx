@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { ChatbotForm } from "@/components/chat/ChatbotForm";
 import { ChatbotConfig } from "@/types/chatbot";
 import { WidgetSkeletonShimmer } from "@/components/widget/WidgetSkeleton";
-import { CodeBlockSkeletonShimmer } from "@/components/ui/code-block-skeleton";
+import { CodeBlockSkeletonShimmer } from "@/components/codeblock/code-block-skeleton";
 
 // Dynamic imports with loading states
 const ChatWidgetPreview = dynamic(
@@ -17,7 +17,7 @@ const ChatWidgetPreview = dynamic(
 );
 
 const CodeBlock = dynamic(
-  () => import("@/components/ui/code-block").then((mod) => ({ default: mod.CodeBlock })),
+  () => import("@/components/codeblock/code-block").then((mod) => ({ default: mod.CodeBlock })),
   {
     loading: () => <CodeBlockSkeletonShimmer theme="light" />,
     ssr: true,
