@@ -29,7 +29,6 @@ const initialConfig: ChatbotConfig = {
   color: "#03a84e",
   message: "Hi 👋 How can I help you?",
   suggestions: ["I have a question", "Tell me more"],
-  userMessages: ["this massage is from user"],
   fontFamily: "",
 };
 

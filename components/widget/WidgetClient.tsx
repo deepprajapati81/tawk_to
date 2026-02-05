@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 export default function WidgetClient({
   initialColor,
   initialTitle,
-  initialFontFamily
+  initialFontFamily,
 }: {
   initialColor?: string;
   initialTitle?: string;
@@ -14,7 +14,7 @@ export default function WidgetClient({
 }) {
   const [color, setColor] = useState(initialColor || "#0ea5e9");
   const [title, setTitle] = useState(initialTitle || "chatbot");
-  const [FontFamily,setFontFamily] = useState(initialFontFamily|| 'inter')
+  const [FontFamily, setFontFamily] = useState(initialFontFamily || "inter");
   const [message, setMessage] = useState<string[]>([]);
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -95,21 +95,21 @@ export default function WidgetClient({
     <div
       className="h-screen flex flex-col shadow-xl overflow-hidden"
       style={{
-        fontFamily:FontFamily,
+        fontFamily: FontFamily,
         background: "#fff",
         color: textColor,
       }}
     >
       <div
-  className="fixed top-0 left-0 w-full z-20 flex items-center"
-  style={{
-    height: 56,
-    padding: "10px",
-    fontWeight: 700,
-    background: color,
-    color: textColor,
-  }}
->
+        className="fixed top-0 left-0 w-full z-20 flex items-center"
+        style={{
+          height: 56,
+          padding: "10px",
+          fontWeight: 700,
+          background: color,
+          color: textColor,
+        }}
+      >
         <Button
           className="text-xl "
           style={{
@@ -123,16 +123,15 @@ export default function WidgetClient({
         </Button>
         <h1 className="text-lg text-start">{title}</h1>
       </div>
-<div
-  className="overflow-y-auto px-4 py-3 space-y-2"
-  style={{
-    background: panelBg,
-    marginTop: 56,    
-    marginBottom: 64, 
-    height: "calc(100vh - 56px - 64px)",
-  }}
->
-        
+      <div
+        className="overflow-y-auto px-4 py-3 space-y-2"
+        style={{
+          background: panelBg,
+          marginTop: 56,
+          marginBottom: 64,
+          height: "calc(100vh - 56px - 64px)",
+        }}
+      >
         <div className="text-sm message-fadeIn">
           <div
             className="w-fit px-4 py-2.5 rounded-2xl text-sm wrap-break-word break-all whitespace-pre-wrap shadow-sm"
@@ -144,38 +143,40 @@ export default function WidgetClient({
 
         <div className="flex flex-col items-end space-y-2">
           {message &&
-            message?.filter((m) => m.trim().length > 0).map((m: string, index: number) => (
-              <div 
-                key={index} 
-                className=" text-xs max-w-[85%]"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
+            message
+              ?.filter((m) => m.trim().length > 0)
+              .map((m: string, index: number) => (
                 <div
-                  className="w-fit px-4 py-2.5 rounded-2xl text-sm wrap-break-word break-word whitespace-pre-wrap shadow-sm message-fadeIn"
-                  style={{ backgroundColor: color, color: textColor }}
+                  key={index}
+                  className=" text-xs max-w-[85%]"
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <p className="wrap-break-word">{m}</p>
+                  <div
+                    className="w-fit px-4 py-2.5 rounded-2xl text-sm wrap-break-word break-word whitespace-pre-wrap shadow-sm message-fadeIn"
+                    style={{ backgroundColor: color, color: textColor }}
+                  >
+                    <p className="wrap-break-word">{m}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
         </div>
         <div ref={messagesEndRef} />
       </div>
-     <div
-  className="fixed bottom-0 left-0 w-full z-20 p-2 flex gap-2 items-center"
-  style={{
-    height: 64,
-    borderTop: "1px solid rgba(0,0,0,0.06)",
-    background: footerBg,
-  }}
->
+      <div
+        className="fixed bottom-0 left-0 w-full z-20 p-2 flex gap-2 items-center"
+        style={{
+          height: 64,
+          borderTop: "1px solid rgba(0,0,0,0.06)",
+          background: footerBg,
+        }}
+      >
         <Formik
           initialValues={{ message: "" }}
           onSubmit={(values, { resetForm }) => {
             if (!values.message.trim()) return;
-            
+
             setIsSending(true);
-            
+
             // Simulate sending animation
             setTimeout(() => {
               setMessage((prev) => [...prev, values.message]);
@@ -202,7 +203,7 @@ export default function WidgetClient({
               <Button
                 type="submit"
                 disabled={isSending}
-                className={`transition-all duration-200 ${isSending ? 'animate-pulse scale-95' : 'hover:scale-105'}`}
+                className={`transition-all duration-200 ${isSending ? "animate-pulse scale-95" : "hover:scale-105"}`}
                 style={{
                   background: color,
                   color: textColor,

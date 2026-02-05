@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ChatbotConfig } from "@/types/chatbot";
-
+import { ChatbotFormProps } from "@/types/chatbot";
 import {
   Select,
   SelectContent,
@@ -13,13 +13,6 @@ import {
   SelectItem,
   SelectValue,
 } from "../ui/select";
-
-type Props = {
-  initialValues: ChatbotConfig;
-  onChange: (values: Partial<ChatbotConfig>) => void;
-  setId:React.Dispatch<React.SetStateAction<string>>;
-};
-
 const fontClassMap: Record<string, string> = {
   inter: "font-inter",
   roboto: "font-roboto",
@@ -29,9 +22,11 @@ const fontClassMap: Record<string, string> = {
   firaCode: "font-FiraCode",
 };
 
-export const ChatbotForm = ({ initialValues, onChange,setId }: Props) => {
- 
-
+export const ChatbotForm = ({
+  initialValues,
+  onChange,
+  setId,
+}: ChatbotFormProps) => {
   const handleSave = async () => {
     const res = await fetch("/api/widget", {
       method: "POST",
@@ -43,9 +38,8 @@ export const ChatbotForm = ({ initialValues, onChange,setId }: Props) => {
     });
 
     const data = await res.json();
-    console.log(data);
-    setId(data.id)
-   
+
+    setId(data.id);
   };
 
   return (
@@ -95,7 +89,6 @@ export const ChatbotForm = ({ initialValues, onChange,setId }: Props) => {
                   const color = (e.target as HTMLInputElement).value;
 
                   onChange({ color });
-
                 }}
                 onBlur={(e) => {
                   const color = (e.target as HTMLInputElement).value;
@@ -159,7 +152,7 @@ export const ChatbotForm = ({ initialValues, onChange,setId }: Props) => {
             value={values.fontFamily}
             onValueChange={(value) => {
               setFieldValue("fontFamily", value);
-              // onChange({ ...values, fontFamily: e.target.value })
+
               onChange({ ...values, fontFamily: value });
             }}
           >
@@ -181,11 +174,12 @@ export const ChatbotForm = ({ initialValues, onChange,setId }: Props) => {
           </Select>
 
           <div className="flex gap-x-2">
-            {/* <Button type="submit" className="w-fit">
-              Save
-            </Button> */}
-            <Button type="submit" className="w-fit" onClick={handleSave}>
-           Generate Widget
+            <Button
+              type="submit"
+              className="w-fit bg-black text-white"
+              onClick={handleSave}
+            >
+              Generate Widget
             </Button>
           </div>
         </Form>

@@ -4,20 +4,10 @@ import { Input } from "../ui/input";
 import { useMemo, useState, useRef, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Field, Form, Formik } from "formik";
+import { ChatWidgetPreviewProps } from "@/types/chatbot";
 
-type Props = {
-  config: {
-    title: string;
-    color: string;
-    message: string;
-    suggestions: string[];
-    fontFamily: string;
-  };
-};
-
-export const ChatWidgetPreview = ({ config }: Props) => {
-  const { title, color, message, suggestions, fontFamily } =
-    config;
+export const ChatWidgetPreview = ({ config }: ChatWidgetPreviewProps) => {
+  const { title, color, message, suggestions, fontFamily } = config;
   const [inputMessage, setInputMessage] = useState<string[]>([]);
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -97,32 +87,40 @@ export const ChatWidgetPreview = ({ config }: Props) => {
         </div>
 
         <div className="flex flex-col items-end space-y-2">
-          {suggestions?.filter((m) => m.trim().length > 0).map((s, i) => (
-            <div
-              key={i}
-              className="w-fit px-4 py-2.5 rounded-2xl text-sm wrap-break-word break-all whitespace-pre-wrap shadow-sm message-fadeIn"
-              style={{ backgroundColor: color, color: textColor, animationDelay: `${i * 0.1}s` }}
-            >
-              {s}
-            </div>
-          ))}
+          {suggestions
+            ?.filter((m) => m.trim().length > 0)
+            .map((s, i) => (
+              <div
+                key={i}
+                className="w-fit px-4 py-2.5 rounded-2xl text-sm wrap-break-word break-all whitespace-pre-wrap shadow-sm message-fadeIn"
+                style={{
+                  backgroundColor: color,
+                  color: textColor,
+                  animationDelay: `${i * 0.1}s`,
+                }}
+              >
+                {s}
+              </div>
+            ))}
         </div>
         <div className="flex flex-col items-end space-y-2">
           {inputMessage &&
-            inputMessage?.filter((m) => m.trim().length > 0).map((m: string, index: number) => (
-              <div 
-                key={index} 
-                className="text-xs max-w-[85%] message-fadeIn"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
+            inputMessage
+              ?.filter((m) => m.trim().length > 0)
+              .map((m: string, index: number) => (
                 <div
-                  className="w-fit px-4 py-2.5 rounded-2xl text-sm wrap-break-word break-word whitespace-pre-wrap shadow-sm"
-                  style={{ backgroundColor: color, color: textColor }}
+                  key={index}
+                  className="text-xs max-w-[85%] message-fadeIn"
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  {m}
+                  <div
+                    className="w-fit px-4 py-2.5 rounded-2xl text-sm wrap-break-word break-word whitespace-pre-wrap shadow-sm message-fadeIn"
+                    style={{ backgroundColor: color, color: textColor }}
+                  >
+                    <p className="wrap-break-word">{m}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
         </div>
         <div ref={messagesEndRef} />
       </div>
@@ -138,9 +136,9 @@ export const ChatWidgetPreview = ({ config }: Props) => {
           initialValues={{ message: "" }}
           onSubmit={(values, { resetForm }) => {
             if (!values.message.trim()) return;
-            
+
             setIsSending(true);
-            
+
             setTimeout(() => {
               setInputMessage((prev) => [...prev, values.message]);
               setIsSending(false);
@@ -166,7 +164,7 @@ export const ChatWidgetPreview = ({ config }: Props) => {
               <Button
                 type="submit"
                 disabled={isSending}
-                className={`transition-all duration-200 ${isSending ? 'animate-pulse scale-95' : 'hover:scale-105'}`}
+                className={`transition-all duration-200 ${isSending ? "animate-pulse scale-95" : "hover:scale-105"}`}
                 style={{
                   background: color,
                   color: textColor,

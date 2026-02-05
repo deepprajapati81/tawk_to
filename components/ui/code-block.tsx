@@ -104,7 +104,7 @@ export const CodeBlock = ({
               <div className="w-3 h-3 rounded-full" style={{ background: primaryColor }} />
             </div>
             <span
-              className="text-sm font-medium ml-3"
+              className="text-sm font-medium ml-3  md:block hidden"
               style={{
                 color: theme === "dark" ? "#94a3b8" : "#64748b",
               }}

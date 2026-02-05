@@ -20,7 +20,7 @@ export const InlineCode = ({
         backgroundColor: `${primaryColor}10`,
         color: primaryColor,
         border: `1px solid ${primaryColor}30`,
-        fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+        // fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
       }}
     >
       {children}
