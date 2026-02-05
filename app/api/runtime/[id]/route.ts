@@ -57,29 +57,57 @@ export async function GET(req: Request, context: any) {
         btn.style.zIndex="999999";
         btn.style.fontFamily= "${fontFamily}"
 
-        var iframe=document.createElement("iframe");
-        var params = new URLSearchParams({
+
+
+var iframe=document.createElement("iframe");
+var params = new URLSearchParams({
   color: "${color}",
   title: "${title}",
- fontFamily:"${fontFamily}"
-
+  fontFamily: "${fontFamily}"
 });
-        // pass color as query param for initial load; we will poll and postMessage updates
-   iframe.src = base + "/widget-ui/${id}?" + params.toString();
 
-        iframe.style.position="fixed";
-        iframe.style.bottom="90px";
-        iframe.style.right="20px";
-        iframe.style.width="350px";
-        iframe.style.height="500px";
-        iframe.style.display="none";
-        iframe.style.border="0";
-        iframe.style.borderRadius = '10px';
-        iframe.style.boxShadow = '0 10px 30px rgba(0,0,0,0.2)';
-        iframe.style.zIndex = '999990';
-        iframe.setAttribute('allow','clipboard-write');
-        iframe.setAttribute('title','Support Chat Widget');
-        iframe.setAttribute('aria-hidden','true');
+iframe.src = base + "/widget-ui/${id}?" + params.toString();
+
+iframe.style.position = "fixed";
+iframe.style.border = "0";
+iframe.style.display = "none";
+iframe.style.boxShadow = "0 10px 30px rgba(0,0,0,0.2)";
+iframe.style.zIndex = "999990";
+iframe.setAttribute("allow", "clipboard-write");
+iframe.setAttribute("title", "Support Chat Widget");
+iframe.setAttribute("aria-hidden", "true");
+
+function applyResponsiveIframe() {
+  try {
+    var w = window.innerWidth;
+
+    iframe.style.right = "16px";
+    iframe.style.bottom = "80px";
+    iframe.style.borderRadius = "10px";
+
+    // 📱 Mobile
+    if (w <= 640) {
+      iframe.style.width = "80vw";
+      iframe.style.height = "50vh";
+      iframe.style.right = "10";
+      iframe.style.bottom = "30";
+      iframe.style.borderRadius = "10px";
+    }
+    // 📱 Tablet
+    else if (w <= 1024) {
+      iframe.style.width = "320px";
+      iframe.style.height = "450px";
+    }
+    // 🖥 Desktop
+    else {
+      iframe.style.width = "350px";
+      iframe.style.height = "500px";
+    }
+  } catch(e){}
+}
+
+applyResponsiveIframe();
+window.addEventListener("resize", applyResponsiveIframe);
 
         btn.onclick=function(){
           iframe.style.display =

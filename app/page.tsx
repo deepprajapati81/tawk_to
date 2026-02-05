@@ -55,12 +55,14 @@ export default function ChatbotBuilderPage() {
 
   return (
    
-    <div className="w-full min-h-screen bg-gray-100 flex md:px-10">
-  <div className="flex-1 px-6 py-10">
+    <div className="w-full min-h-screen bg-gray-100 md:px-10 px-7 py-10">
+
     <div className="max-w-6xl mx-auto flex flex-col gap-10">
 
       <div className="flex flex-col lg:flex-row gap-10 items-start justify-center">
         
+
+
         <div className="w-full lg:w-1/2 flex flex-col gap-4">
           <h1 className="font-bold text-[23px]">
             Customize your widget here
@@ -76,10 +78,11 @@ export default function ChatbotBuilderPage() {
         <div className="w-full lg:w-1/2 flex justify-center ">
           <ChatWidgetPreview config={config} />
         </div>
+
       </div>
 
-      {id && (
-        <Card className="w-[50%]">
+    <div className="md:w-[60%] w-full lg:w-[40%]">  {id && (
+        <Card >
           <CardHeader>
             <CardTitle className="text-[23px] ">
               Copy to Clipboard
@@ -101,10 +104,10 @@ export default function ChatbotBuilderPage() {
             </Button>
           </CardFooter>
         </Card>
-      )}
+      )}</div>
     </div>
   </div>
-</div>
+
 
   );
 }

@@ -135,7 +135,7 @@ export default function WidgetClient({
         <div className="text-sm">
           {" "}
           <div
-            className="w-fit px-3 py-2 rounded-md text-white text-sm  wrap-break-word"
+            className="w-fit px-3 py-2 rounded-md text-sm  wrap-break-word break-all whitespace-pre-wrap"
             style={{ color: textColor, backgroundColor: color }}
           >
             Hello 👋
@@ -143,16 +143,16 @@ export default function WidgetClient({
           {/* admin */}
         </div>
 
-        <div className="flex flex-col items-end space-y-1 ">
+        <div className="flex flex-col items-end space-y-1  ">
           {message &&
             message.map((m: string, index: number) => (
-              <div key={index} className="text-end text-xs  ">
+              <div key={index} className=" text-xs">
                 <div
                   key={index}
-                  className="w-fit px-3 py-2 rounded-md text-white text-sm wrap-normal"
+                  className="w-fit px-3 py-2 rounded-md  text-sm wrap-break-word break-all whitespace-pre-wrap"
                   style={{ backgroundColor: color,color: textColor, }}
                 >
-                  <p className="wrap-break-word">{m}</p>
+                 <p className="wrap-break-word">{m}</p>
                 </div>{" "}
                 {/* User */}
               </div>
