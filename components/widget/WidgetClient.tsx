@@ -134,7 +134,9 @@ export default function WidgetClient({
       >
         <div className="text-sm message-fadeIn">
           <div
-            className="w-fit px-4 py-2.5 rounded-2xl text-sm wrap-break-word break-all whitespace-pre-wrap shadow-sm"
+            className="w-fit px-4 py-2.5 rounded-2xl text-sm  whitespace-pre-wrap 
+              wrap-break-word
+              wrap:anywhere shadow-sm"
             style={{ color: textColor, backgroundColor: color }}
           >
             Hello 👋
@@ -151,12 +153,25 @@ export default function WidgetClient({
                   className=" text-xs max-w-[85%]"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <div
-                    className="w-fit px-4 py-2.5 rounded-2xl text-sm wrap-break-word break-word whitespace-pre-wrap shadow-sm message-fadeIn"
-                    style={{ backgroundColor: color, color: textColor }}
-                  >
-                    <p className="wrap-break-word">{m}</p>
-                  </div>
+                    <div
+            className="
+              w-fit 
+              max-w-full 
+              px-4 py-2.5 
+              rounded-2xl 
+              text-sm 
+              whitespace-pre-wrap 
+              wrap-break-word
+              wrap:anywhere
+              shadow-sm 
+              message-fadeIn
+            "
+            style={{ backgroundColor: color, color: textColor }}
+          >
+            <p className=" wrap-break-word wrap:anywhere">
+              {m}
+            </p>
+          </div>
                 </div>
               ))}
         </div>
