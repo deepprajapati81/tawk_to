@@ -145,7 +145,7 @@ export default function WidgetClient({
 
         <div className="flex flex-col items-end space-y-1  ">
           {message &&
-            message.map((m: string, index: number) => (
+            message?.filter((m) => m.trim().length > 0).map((m: string, index: number) => (
               <div key={index} className=" text-xs">
                 <div
                   key={index}

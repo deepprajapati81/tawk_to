@@ -92,7 +92,7 @@ export const ChatWidgetPreview = ({ config }: Props) => {
         </div>
 
         <div className="flex flex-col items-end space-y-2">
-          {suggestions.map((s, i) => (
+          {suggestions?.filter((m) => m.trim().length > 0).map((s, i) => (
             <div
               key={i}
               className="w-fit px-3 py-2 rounded-md  text-sm wrap-break-word break-all whitespace-pre-wrap"
@@ -104,7 +104,7 @@ export const ChatWidgetPreview = ({ config }: Props) => {
         </div>
         <div className="flex flex-col items-end space-y-2">
           {inputMessage &&
-            inputMessage.map((m: string, index: number) => (
+            inputMessage  ?.filter((m) => m.trim().length > 0).map((m: string, index: number) => (
               <div key={index} className=" text-xs">
                 <div
                   key={index}
