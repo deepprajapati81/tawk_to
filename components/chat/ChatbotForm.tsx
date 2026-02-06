@@ -155,12 +155,13 @@ export const ChatbotForm = ({
 
               onChange({ ...values, fontFamily: value });
             }}
+            
           >
             <SelectTrigger className="w-60">
               {" "}
               <SelectValue placeholder="Select font family" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="  border-0 bg-gray-100">
               {fontOptions.map((font) => (
                 <SelectItem
                   key={font.value}
